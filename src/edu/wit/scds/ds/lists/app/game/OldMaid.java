@@ -246,6 +246,10 @@ public class OldMaid
             
             
             Card discardable = promptForCard( "Card:  " );
+            // TODO: Write a method in either Player or Card class that determines if the card
+            // that the user enters can be taken out from their hand. 
+                // If yes, send those cards to discard pile and 'loop' until user asks to quit
+                // Otherwise, print a message or something that tells them to choose again.
             
             }
 

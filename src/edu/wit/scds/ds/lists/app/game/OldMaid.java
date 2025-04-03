@@ -245,7 +245,7 @@ public class OldMaid
             System.out.printf( "Player %d reveals their hand. %n%s%nName a card to remove, Type '?' for help, or 'q' to quit.%n", (i+1), (this.players.get( i ).revealHand()) ) ;
             
             
-            promptForCard( "Card:  " );
+            Card discardable = promptForCard( "Card:  " );
             
             }
 

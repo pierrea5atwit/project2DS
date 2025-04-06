@@ -53,7 +53,7 @@ import java.util.ListIterator ;
  *
  * @version 0.1 2025-03-31 skeleton for assignment
  * 
- * @author Your Name // TODO
+ * @author Mina // TODO
  * 
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */

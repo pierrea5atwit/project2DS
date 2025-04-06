@@ -35,6 +35,9 @@ import edu.wit.scds.ds.lists.app.cards.Card ;
 import edu.wit.scds.ds.lists.app.piles.Field ;
 import edu.wit.scds.ds.lists.app.piles.Hand ;
 
+import java.util.List ;
+import java.util.ListIterator ;
+
 /**
  * Representation of a player
  *
@@ -46,7 +49,7 @@ import edu.wit.scds.ds.lists.app.piles.Hand ;
  * 
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
-public class Player
+public class Player  
     {
 
     /*
@@ -140,6 +143,50 @@ public class Player
         return x ;
 
         }   // end revealHand()
+    
+    /**
+     * 
+     * 
+     * @param target
+     * @return
+     */
+    public Card hasPair( Card target ) 
+        {
+        
+        for( Card card : this.hand) 
+            {
+            if((card.rank).equals( target.rank ) && !card.equals( target )) 
+                {
+                return card ;
+                
+                }
+            }
+        return null ;
+        }
+    
+    
+    /**
+     * 
+     * 
+     * @param target
+     * @param matchingCard 
+     * @return
+     */
+    public boolean removePair( Card target , Card matchingCard ) 
+        {
+
+        if(hasPair( target ) != null) 
+            {
+            this.hand.removeCard( target );
+            this.hand.removeCard( matchingCard );
+
+            
+            return true ;
+            }             
+
+        return false ;
+        }
+    
 
     /*
      * utility methods

@@ -36,6 +36,9 @@ import edu.wit.scds.ds.lists.app.cards.Card ;
 import static edu.wit.scds.ds.lists.app.cards.Card.* ;
 import edu.wit.scds.ds.lists.app.utilities.NoCardsException ;
 
+import java.util.List ;
+import java.util.ListIterator ;
+
 /**
  * Representation of a hand of cards
  * 
@@ -64,17 +67,31 @@ public class Hand extends Pile
 		{
 
 		super() ;
-		
+
 		this.defaultFaceDown = FACE_DOWN ;
 		
 		}	// end no-arg constructor
 	
 	
-	/*
-	 * public methods
-	 */
 	
-	// TODO implement this
+	/*
+     * public methods
+     */
+    
+    // TODO implement this
+	
+    /**
+     * 
+     * 
+     * @param cardToRemove 
+     * @return
+     */
+    public void removeCard( Card cardToRemove ) 
+        {
+            this.cards.remove( cardToRemove ) ;             
+        }
+    
+
 	
 
 	/**

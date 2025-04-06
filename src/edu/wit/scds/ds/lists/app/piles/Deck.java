@@ -49,7 +49,7 @@ import jdk.incubator.vector.VectorOperators.Test ;
  *
  * @version 0.1 2025-03-31 skeleton for assignment
  * 
- * @author Your Name // TODO
+ * @author Mina Al Tikriti // TODO
  * 
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
@@ -125,10 +125,14 @@ public class Deck extends Pile
     private void createJokers( int numberOfJokers )
         {
 
-        for ( int i = 0 ; i < numberOfJokers ; i++ )
+        while ( numberOfJokers >= 0  ) 
+            {
             this.cards.add( new Card( Rank.JOKER ) ) ;
-
-        }  // end createJokers()
+            }
+        
+            }
+        
+          // end createJokers()
 
 
     /**
@@ -144,21 +148,20 @@ public class Deck extends Pile
         // generate all the cards in the deck
 
         // loop adds 52 cards to deck
-        for ( Suit suit : Suit.values() )
+        while (cards.size() <= 52) 
             {
-            if ( suit.getDisplayName() != "" )
+            for ( Rank rank : Rank.values() )
                 {
-                for ( Rank rank : Rank.values() )
+                String name = rank.getDisplayName() ;
+
+                if ( name == "Joker" ) 
                     {
-                    String name = rank.getDisplayName() ;
-
-                    if ( name != "Joker" )
-                        this.cards.add( new Card( rank, Suit.CLUBS ) ) ;
-
+                    continue ; 
                     }
+                
+                    this.cards.add( new Card( rank, Suit.CLUBS ) ) ;
 
                 }
-
             }
 
         }  // end createPlayingCards()

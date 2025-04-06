@@ -81,6 +81,7 @@ public class OldMaid
     private int numberOfPlayers ;
     private Deck deck ;
     private Stock stock ;
+    private DiscardPile discarded ; 
 
     private final Scanner scanner ;
 
@@ -179,6 +180,7 @@ public class OldMaid
         {
 
         // TODO implement this
+        setup() ;
 
         }   // end reset()
 
@@ -203,12 +205,11 @@ public class OldMaid
                            this.players.get( 0 ).name ) ;
 
         Player dealer = this.players.get( 0 ) ;
+        this.setup() ;
 
         // deal initial hands
 
-        this.deck = new Deck() ;
-        this.deck.shuffle() ;
-        this.stock = new Stock() ;
+
 
 //        System.out.print( "Would the dealer like to begin? " ) ;
 //        String response = "" ;
@@ -225,6 +226,7 @@ public class OldMaid
 
         System.out.printf( "%n%s distributes cards from the stock. ", dealer.name ) ;
 
+        //Passing cards around 
         for ( int i = 0 ; i < CARD_COUNT ; i++ )
             {
 
@@ -239,15 +241,29 @@ public class OldMaid
         // Players remove their pairs
         System.out.println( "Now it's time to clear your pairs! " ) ;
         
+        Player currentPlayer = dealer ; 
         for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
             {
             
-            System.out.printf( "Player %d reveals their hand. %n%s%nName a card to remove, Type '?' for help, or 'q' to quit.%n", (i+1), (this.players.get( i ).revealHand()) ) ;
+            System.out.printf( "Player %d reveals their hand. %n%s%nName a card to remove, Type '?' for help, or 'q' to quit.%n", (i+1), (currentPlayer.revealHand()) ) ;
             
-            
-            Card discardable = promptForCard( "Card:  " );
+            Card cardToPair = promptForCard( "Card:  " );
             // TODO: Write a method in either Player or Card class that determines if the card
             // that the user enters can be taken out from their hand. 
+            Card paired = currentPlayer.hasPair(cardToPair) ;
+            if (paired != null) 
+                {
+                currentPlayer.removePair( cardToPair, paired );
+                this.discarded.addPair( cardToPair, paired );
+                }
+            
+            for( Player p : this.players) 
+                {
+                
+                //was thinking we could use a for-each loop for each players turn?
+                //here the player is ask if their hand contains any pairs using hasPair( targetCard )
+                }
+            
                 // If yes, send those cards to discard pile and 'loop' until user asks to quit
                 // Otherwise, print a message or something that tells them to choose again.
             
@@ -274,6 +290,8 @@ public class OldMaid
 
         // find out how many players
         this.numberOfPlayers = DEFAULT_PLAYER_COUNT ;
+        
+
 
         if ( MINIMUM_PLAYER_COUNT < MAXIMUM_PLAYER_COUNT )
             {
@@ -314,6 +332,11 @@ public class OldMaid
             this.players.add( new Player( playerName ) ) ;
 
             }
+        this.deck = new Deck( 1 ) ;
+        this.deck.shuffle() ;
+        this.stock = new Stock() ;
+        DiscardPile discarded = new DiscardPile(); 
+        
 
         // TODO implement this
 

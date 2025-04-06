@@ -68,7 +68,7 @@ public class Hand extends Pile
 
 		super() ;
 
-		this.defaultFaceDown = FACE_DOWN ;
+		this.defaultFaceDown = FACE_UP ;
 		
 		}	// end no-arg constructor
 	
@@ -88,9 +88,20 @@ public class Hand extends Pile
      */
     public void removeCard( Card cardToRemove ) 
         {
-            this.cards.remove( cardToRemove ) ;             
+            this.cards.remove( cardToRemove ) ; 
         }
     
+    /**
+     * 
+     * 
+     * @return
+     */
+    public Card getRandomCard () 
+        {
+        int ranPosition = (int) (Math.random()*this.cards.size()) ;
+        return this.cards.get( ranPosition ) ;
+        }
+
 
 	
 

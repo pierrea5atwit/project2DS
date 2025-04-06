@@ -35,21 +35,18 @@ import edu.wit.scds.ds.lists.app.cards.Card ;
 import edu.wit.scds.ds.lists.app.piles.Field ;
 import edu.wit.scds.ds.lists.app.piles.Hand ;
 
-import java.util.List ;
-import java.util.ListIterator ;
-
 /**
  * Representation of a player
  *
  * @author Dave Rosenberg
  *
  * @version 0.1 2025-03-31 skeleton for assignment
- * 
+ *
  * @author ANDREW PIERRE
- * 
+ *
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
-public class Player  
+public class Player
     {
 
     /*
@@ -114,20 +111,23 @@ public class Player
 
     /**
      * Hand a card to another player, they add it to their hand via dealtACard
-     * 
+     *
      * @param 'target'
      *     player, person recieving the card.
      */
     public void giveCardToPlayer( Player target )
         {
-        Card giveaway = this.hand.removeTopCard() ;
+        this.hand.flipAll() ;
+        this.hand.shuffle() ;
+        Card giveaway = this.hand.getRandomCard() ;
         target.dealtACard( giveaway ) ;
 
         }
 
 
     /**
-     * provide a string revealing the contents of the player's hand, re-conceals after revealing
+     * provide a string revealing the contents of the player's hand, re-conceals
+     * after revealing
      *
      * @return a string containing the cards in the player's hand
      *
@@ -137,56 +137,59 @@ public class Player
         {
 
         this.hand.flipAll() ;
-        String x = this.hand.toString() ; 
+        String x = this.hand.toString() ;
         this.hand.flipAll() ;
-        
+
         return x ;
 
         }   // end revealHand()
-    
+
+
     /**
-     * 
-     * 
      * @param target
+     *
      * @return
      */
-    public Card hasPair( Card target ) 
+    public Card hasPair( Card target )
         {
-        
-        for( Card card : this.hand) 
+
+        for ( Card card : this.hand )
             {
-            if((card.rank).equals( target.rank ) && !card.equals( target )) 
+            if ( ( card.rank ).equals( target.rank ) && !card.equals( target ) )
                 {
                 return card ;
-                
+
                 }
+
             }
+
         return null ;
+
         }
-    
-    
+
+
     /**
-     * 
-     * 
      * @param target
-     * @param matchingCard 
+     * @param matchingCard
+     *
      * @return
      */
-    public boolean removePair( Card target , Card matchingCard ) 
+    public boolean removePair( Card target,
+                               Card matchingCard )
         {
 
-        if(hasPair( target ) != null) 
+        if ( hasPair( target ) != null )
             {
-            this.hand.removeCard( target );
-            this.hand.removeCard( matchingCard );
+            this.hand.removeCard( target ) ;
+            this.hand.removeCard( matchingCard ) ;
 
-            
             return true ;
-            }             
+
+            }
 
         return false ;
+
         }
-    
 
     /*
      * utility methods

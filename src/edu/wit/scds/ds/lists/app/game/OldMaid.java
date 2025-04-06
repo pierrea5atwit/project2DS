@@ -241,9 +241,10 @@ public class OldMaid
         // Players remove their pairs
         System.out.println( "Now it's time to clear your pairs! " ) ;
         
-        Player currentPlayer = dealer ; 
-        for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
+        for ( int i = 0 ; i < this.numberOfPlayers - 1 ; i++ )
             {
+            
+            Player currentPlayer = this.players.get( i ) ; 
             
             System.out.printf( "Player %d reveals their hand. %n%s%nName a card to remove, Type '?' for help, or 'q' to quit.%n", (i+1), (currentPlayer.revealHand()) ) ;
             
@@ -256,6 +257,7 @@ public class OldMaid
                 currentPlayer.removePair( cardToPair, paired );
                 this.discarded.addPair( cardToPair, paired );
                 }
+            currentPlayer.giveCardToPlayer( this.players.get( i + 1 ));
             
             for( Player p : this.players) 
                 {
@@ -335,7 +337,7 @@ public class OldMaid
         this.deck = new Deck( 1 ) ;
         this.deck.shuffle() ;
         this.stock = new Stock() ;
-        DiscardPile discarded = new DiscardPile(); 
+        this.discarded = new DiscardPile(); 
         
 
         // TODO implement this

@@ -29,12 +29,14 @@
  * @formatter:on
  */
 
-
-package edu.wit.scds.ds.lists.app.piles;
+package edu.wit.scds.ds.lists.app.piles ;
 
 import edu.wit.scds.ds.lists.app.cards.Card ;
 import static edu.wit.scds.ds.lists.app.cards.Card.* ;
 import edu.wit.scds.ds.lists.app.utilities.NoCardsException ;
+
+import java.util.List ;
+import java.util.ListIterator ;
 
 /**
  * Representation of a hand of cards
@@ -48,58 +50,69 @@ import edu.wit.scds.ds.lists.app.utilities.NoCardsException ;
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
 public class Hand extends Pile
-	{
-	
-	// no additional data fields
-	
-	
-	/*
-	 * constructors
-	 */
+    {
 
-	/**
-	 * initialize hand
-	 */
-	public Hand()
-		{
+    // no additional data fields
 
-		super() ;
-		
-		this.defaultFaceDown = FACE_DOWN ;
-		
-		}	// end no-arg constructor
-	
-	
-	/*
-	 * public methods
-	 */
-	
-	// TODO implement this
-	
-
-	/**
-     * (optional) test driver
-     * 
-     * @param args
-     *     -unused-
+    /*
+     * constructors
      */
-	public static void main( String[] args )
-		{
-		// TODO Auto-generated method stub
 
-		}	// end main()
+    /**
+     * initialize hand
+     */
+    public Hand()
+        {
+
+        super() ;
+
+        this.defaultFaceDown = FACE_UP ;
+
+        }	// end no-arg constructor
+
+    /*
+     * public methods
+     */
+
+    // TODO implement this
+
+    /**
+     * @param dealt represents 'card dealt to hand'
+     * 
+     */
+    public void addToTop( Card dealt )
+        {
+        
+        this.cards.add( 0, dealt ) ;
+        
+        }
+
 
 
     /**
      * 
      * 
-     * @param dealt
      */
-    public void addToTop( Card dealt )
+    public Card getRandomCard()
         {
-
-        this.cards.add( 0, dealt );
+        int ranPosition = (int) ( Math.random() * this.cards.size() ) ;
+        return this.cards.get( ranPosition ) ;
 
         }
 
-	}	// end class Hand
+
+    /**
+     * (optional) test driver
+     * 
+     * @param args
+     *     -unused-
+     */
+    public static void main( String[] args )
+        {
+        // TODO Auto-generated method stub
+
+        }	// end main()
+
+
+
+    }	// end class Hand

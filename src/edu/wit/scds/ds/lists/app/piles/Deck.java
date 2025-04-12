@@ -49,7 +49,7 @@ import jdk.incubator.vector.VectorOperators.Test ;
  *
  * @version 0.1 2025-03-31 skeleton for assignment
  * 
- * @author Your Name // TODO
+ * @author Mina Al Tikriti // TODO
  * 
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
@@ -75,7 +75,7 @@ public class Deck extends Pile
     public Deck()
         {
         // instantiate the deck with no jokers
-        this( 1 ) ;
+        this( 0 ) ;
 
         }	// end no-arg constructor
 
@@ -126,9 +126,14 @@ public class Deck extends Pile
         {
 
         for ( int i = 0 ; i < numberOfJokers ; i++ )
+            {
             this.cards.add( new Card( Rank.JOKER ) ) ;
 
-        }  // end createJokers()
+            }
+
+        }
+
+    // end createJokers()
 
 
     /**
@@ -144,18 +149,19 @@ public class Deck extends Pile
         // generate all the cards in the deck
 
         // loop adds 52 cards to deck
-        for ( Suit suit : Suit.values() )
+        while ( this.cards.size() < 52 )
             {
-            if ( suit.getDisplayName() != "" )
+            for ( Rank rank : Rank.values() )
                 {
-                for ( Rank rank : Rank.values() )
-                    {
-                    String name = rank.getDisplayName() ;
+                String name = rank.getDisplayName() ;
 
-                    if ( name != "Joker" )
-                        this.cards.add( new Card( rank, Suit.CLUBS ) ) ;
+                if ( name == "Joker" )
+                    {
+                    continue ;
 
                     }
+
+                this.cards.add( new Card( rank, Suit.CLUBS ) ) ;
 
                 }
 
@@ -177,8 +183,8 @@ public class Deck extends Pile
     public static void main( String[] args )
         {
 
-        Deck tester = new Deck() ;
-//        tester.shuffle();
+        Deck tester = new Deck(1) ;
+// tester.shuffle();
         System.out.printf( "%s%n%d", tester, tester.cardCount() ) ;
 
         }	// end main()

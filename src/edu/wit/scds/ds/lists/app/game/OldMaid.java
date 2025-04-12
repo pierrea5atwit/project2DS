@@ -81,6 +81,7 @@ public class OldMaid
     private int numberOfPlayers ;
     private Deck deck ;
     private Stock stock ;
+    private DiscardPile discard ;
 
     private final Scanner scanner ;
 
@@ -179,6 +180,7 @@ public class OldMaid
         {
 
         // TODO implement this
+        setup() ;
 
         }   // end reset()
 
@@ -191,7 +193,7 @@ public class OldMaid
     private void run()
         {
 
-        // TODO implement this
+// this.setup() ;
 
         // introduce game
         System.out.printf( "%nThe game’s objective is to avoid being the player left with a Joker card.%n" +
@@ -206,56 +208,34 @@ public class OldMaid
 
         // deal initial hands
 
-        this.deck = new Deck() ;
-        this.deck.shuffle() ;
-        this.stock = new Stock() ;
-
-//        System.out.print( "Would the dealer like to begin? " ) ;
-//        String response = "" ;
-//
-//        while ( !"y".equals( response ) && this.scanner.hasNextLine() )
-//            {
-//            response = this.scanner.nextLine() ;
-//
-//            }
-
         System.out.println( "\nMoving cards from deck to stock...\n" ) ;
 
         this.stock.transferFromPile( this.deck ) ;
 
         System.out.printf( "%n%s distributes cards from the stock. ", dealer.name ) ;
 
+        // Passing cards around
         for ( int i = 0 ; i < CARD_COUNT ; i++ )
             {
 
             int playerNum = i % this.numberOfPlayers ;
-            dealer.dealtACard( this.stock.removeTopCard() ) ;
+            Card topCard = this.stock.removeTopCard() ;
+
+            dealer.dealtACard( topCard ) ;
 
             if ( playerNum != 0 )
-                dealer.giveCardToPlayer( this.players.get( playerNum ) ) ;
+                dealer.giveTopCardToPlayer( this.players.get( playerNum ) ) ;
 
             }
 
         // Players remove their pairs
         System.out.println( "Now it's time to clear your pairs! " ) ;
-        
-        for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
-            {
-            
-            System.out.printf( "Player %d reveals their hand. %n%s%nName a card to remove, Type '?' for help, or 'q' to quit.%n", (i+1), (this.players.get( i ).revealHand()) ) ;
-            
-            
-            Card discardable = promptForCard( "Card:  " );
-            // TODO: Write a method in either Player or Card class that determines if the card
-            // that the user enters can be taken out from their hand. 
-                // If yes, send those cards to discard pile and 'loop' until user asks to quit
-                // Otherwise, print a message or something that tells them to choose again.
-            
-            }
 
-        // NOTE this prompt provides directions which the promptForCard() method uses
+        clearPairs() ;
 
-        // take turns playing
+        // Now, the players will hand the player 'to their right' a random card from
+        // their hand, and continue
+        // taking turns playing
 
         // when end, set this.running false
         }   // end run()
@@ -315,7 +295,10 @@ public class OldMaid
 
             }
 
-        // TODO implement this
+        this.deck = new Deck( 1 ) ;
+        this.deck.shuffle() ;
+        this.stock = new Stock() ;
+        this.discard = new DiscardPile() ;
 
         }   // end setup()
 
@@ -358,7 +341,71 @@ public class OldMaid
      * utility methods
      */
 
-    // NOTE you might find these utility methods useful for console I/O
+
+    /**
+     * Simulate a round of OldMaid where players all clear their own pairs
+     */
+    public void clearPairs()
+        {
+        for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
+            {
+
+            Player currentPlayer = this.players.get( i ) ;
+
+            System.out.printf( "Player %S reveals their hand. %n%s%nName a CARD to remove, Type '?' for help, or 'q' to quit.%n",
+                               currentPlayer.name,
+                               currentPlayer.revealHand() ) ;
+
+            // filler value while CTP waits to be reassigned
+            Card cardToPair ;
+            Card second ;
+
+            // Loop user inputs a 'q'
+            while ( true )
+                {
+                cardToPair = promptForCard( "Card:  " ) ;
+                if ( cardToPair == null ) // if 'q' input
+                    break ;
+
+                // Asserts that the player actually has this card, null otherwise
+                // if player misinputs, they can try again
+                cardToPair = currentPlayer.searchPile( cardToPair ) ;
+
+                if ( cardToPair == null )
+                    {
+                    cardToPair = new Card( Rank.JOKER ) ; // garbage value to avoid
+                                                          // loop exit
+                    System.out.println( "Card not found, try again." ) ;
+                    continue ;
+
+                    }
+
+                second = currentPlayer.findMatch( cardToPair ) ;
+
+                // at this point, we don't care about suit and only compare ranks in
+                // add/remove
+                Card.setCompareSuit( false ) ;
+
+                if ( second != null )
+                    {
+                    this.discard.addPair( cardToPair, second ) ;
+                    currentPlayer.removePair( cardToPair, second ) ;
+
+                    System.out.printf( "Discard: %s%nPlayer now has: %s%n",
+                                       this.discard.toString(),
+                                       currentPlayer.revealHand() ) ;
+
+                    }
+                else
+                    System.out.println( "This card does not have a pair, so you can't pick that." ) ;
+
+                Card.setCompareSuit( true ) ;
+
+                }
+
+            }
+
+        }
 
 
     /**
@@ -448,15 +495,15 @@ public class OldMaid
                     break ;
 
                     }
-                if ("q".equals( input.toLowerCase() ))
-                    {
-                    return null;
-                    }
+
+                if ( "Q".equals( input ) )
+                    return null ;
+
                 }
 
-            if ( input.length() > 2 )
+            if ( input.length() != 2 )
                 {
-                System.out.printf( "%nplease try again: " ) ;
+                System.out.printf( "%nInvalid input, try again! '?' for help. " ) ;
 
                 input = null ;
 

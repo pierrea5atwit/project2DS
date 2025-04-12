@@ -71,9 +71,19 @@ public class DiscardPile extends Pile
      * public methods
      */
     
+    /**
+     * Add a pair of cards to the deck, two at a time
+     * 
+     * @param cardOne 
+     * @param cardTwo 
+     */
+    public void addPair(Card cardOne, Card cardTwo ) 
+        {
+        this.cards.add( cardOne ) ;
+        this.cards.add( cardTwo ) ;
+        }
     
-    // TODO implement this
-
+    
 
     /**
      * (optional) test driver

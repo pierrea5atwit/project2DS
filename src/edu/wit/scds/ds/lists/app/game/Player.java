@@ -41,9 +41,9 @@ import edu.wit.scds.ds.lists.app.piles.Hand ;
  * @author Dave Rosenberg
  *
  * @version 0.1 2025-03-31 skeleton for assignment
- * 
+ *
  * @author ANDREW PIERRE
- * 
+ *
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
 public class Player
@@ -111,20 +111,23 @@ public class Player
 
     /**
      * Hand a card to another player, they add it to their hand via dealtACard
-     * 
-     * @param 'target'
-     *     player, person recieving the card.
+     *
+     * @param target
+     *     person recieving the card.
      */
-    public void giveCardToPlayer( Player target )
+    public void giveTopCardToPlayer( Player target )
         {
-        Card giveaway = this.hand.removeTopCard() ;
+
+        Card giveaway = this.hand.getRandomCard() ;
         target.dealtACard( giveaway ) ;
+        this.hand.removeTopCard() ;
 
         }
 
 
     /**
-     * provide a string revealing the contents of the player's hand, re-conceals after revealing
+     * provide a string revealing the contents of the player's hand, 'put it back
+     * down' after revealing
      *
      * @return a string containing the cards in the player's hand
      *
@@ -133,19 +136,106 @@ public class Player
     public String revealHand()
         {
 
+        this.hand.flipAllUp() ;
+        String reveal = this.hand.toString() ;
         this.hand.flipAll() ;
-        String x = this.hand.toString() ; 
-        this.hand.flipAll() ;
-        
-        return x ;
+
+        return reveal ;
 
         }   // end revealHand()
+
+
+    /**
+     * checks player's hand to see whether there's a card that matches
+     * 
+     * @param target
+     *     card that the player is testing for pairs
+     *
+     * @return the given card's "Match" if found. else return null
+     */
+    public Card findMatch( Card target )
+        {
+
+        if ( target == null )
+            return null ;
+
+        // flag prevents counting one occurence as a pair
+        boolean seen = false ;
+        
+        for ( Card card : this.hand )
+            {
+            if ( ( card.rank ).equals( target.rank ) && !seen )
+                seen = true ;
+
+            else if ( ( card.rank ).equals( target.rank ) && seen )
+                {
+                return card ;
+
+                }
+
+            }
+
+        return null ;
+
+        }
+
+
+    /**
+     * Player removes a card from their hand
+     * 
+     * @param first
+     *     first card to remove
+     * @param second
+     *     second card to remove
+     * 
+     * @return boolean indicating if removed successfuly or not
+     */
+    public boolean removePair( Card first,
+                               Card second )
+        {
+
+        if ( first.equals( second ) )
+            {
+            this.hand.removeCard( first ) ;
+            this.hand.removeCard( second ) ;
+            return true ;
+
+            }
+
+        return false ;
+
+        }
+
+
+    /**
+     * check 'pile' for the occurence of a card.
+     * 
+     * @param target
+     *     card we're looking for
+     * 
+     * @return null object or a reference to that card.
+     */
+    public Card searchPile( Card target )
+        {
+        if ( target == null )
+            return null ;
+
+        for ( Card c : this.hand )
+            {
+            if ( target.equals( c ) )
+                return c ;
+
+            }
+
+        return null ;
+
+        }
 
     /*
      * utility methods
      */
-
-
+    
+    
     @Override
     public String toString()
         {

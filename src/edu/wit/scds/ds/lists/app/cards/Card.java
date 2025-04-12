@@ -411,7 +411,7 @@ public class Card implements Comparable<Card>
 
         }	// end compareTo()
 
-
+    
     @Override
     public boolean equals( final Object otherObject )
         {

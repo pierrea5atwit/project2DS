@@ -53,7 +53,7 @@ import java.util.ListIterator ;
  *
  * @version 0.1 2025-03-31 skeleton for assignment
  * 
- * @author Your Name // TODO
+ * @author Mina // TODO
  * 
  * @version 1.0 2025-03-31 Initial implementation per assignment
  */
@@ -116,9 +116,20 @@ public abstract class Pile implements Iterable<Card>
      * public methods
      */
 
-    // TODO implement this
-
     // NOTE I left a couple of methods for you...
+
+
+    /**
+     * Add card to pile
+     * 
+     * @param card
+     *     to be added
+     */
+    public void addCard( Card card )
+        {
+        this.cards.add( card ) ;
+
+        }
 
 
     /**
@@ -168,6 +179,23 @@ public abstract class Pile implements Iterable<Card>
 
 
     /**
+     * flip all cards in the pile upright - if a card was face down, turn it face up;
+     * else leave it be
+     */
+    public void flipAllUp()
+        {
+
+        for ( Card aCard : this.cards )
+            {
+            if ( !aCard.getFaceUp() )
+                aCard.flip() ;
+
+            }
+
+        }   // end flipAll()
+
+
+    /**
      * Retrieve the top card from the pile
      * <p>
      * Caution: the returned card should only be in one pile at any time
@@ -199,14 +227,35 @@ public abstract class Pile implements Iterable<Card>
 
 
     /**
+     * @param cardToRemove
+     *     target for removal
+     * 
+     * @throws NoCardsException
+     *     if empty
+     */
+    public void removeCard( Card cardToRemove ) throws NoCardsException
+        {
+        if ( isEmpty() )
+            throw new NoCardsException() ;
+
+        this.cards.remove( cardToRemove ) ;
+
+        }
+
+
+    /**
      * removes the 'top card' from a deck or other pile
      * 
      * @return the top card in stack
      * 
      * @throws NoCardsException
+     *     if empty
      */
     public Card removeTopCard() throws NoCardsException
         {
+        if ( isEmpty() )
+            throw new NoCardsException() ;
+
         Card top = getTopCard() ;
         this.cards.remove( 0 ) ;
         return top ;
@@ -217,7 +266,8 @@ public abstract class Pile implements Iterable<Card>
     /**
      * Method to take ALL cards from one pile to another
      * 
-     * @param stack the 'other' pile we're pulling cards from
+     * @param stack
+     *     the 'other' pile we're pulling cards from
      */
     public void transferFromPile( Pile stack )
         {

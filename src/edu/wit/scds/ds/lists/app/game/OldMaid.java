@@ -196,12 +196,13 @@ public class OldMaid
 // this.setup() ;
 
         // introduce game
-        System.out.printf( "%nThe game’s objective is to avoid being the player left with a Joker card.%n" +
-                           "Each person’s hand is narrowed down by removing all numeric pairs and dealing one " +
-                           "card to each other [There should be 51 total cards in use, as one joker is " +
-                           "discarded by default].%nPlayer 1: %s, will be the dealer. %n%nAfter removing each pair you have, " +
-                           "every player will put their hand face down, shuffle, and give away a random card to their right.%n" +
-                           "This goes until only one player is left with a card and loses the game! Have fun.%n%n",
+        System.out.printf( """
+                           %nThe game’s objective is to avoid being the player left with a Joker card.%n\
+                           Each person’s hand is narrowed down by removing all numeric pairs and dealing one \
+                           card to each other [There should be 51 total cards in use, as one joker is \
+                           discarded by default].%nPlayer 1: %s, will be the dealer. %n%nAfter removing each pair you have, \
+                           every player will put their hand face down, shuffle, and give away a random card to their right.%n\
+                           This goes until only one player is left with a card and loses the game! Have fun.%n%n""",
                            this.players.get( 0 ).name ) ;
 
         Player dealer = this.players.get( 0 ) ;
@@ -211,6 +212,7 @@ public class OldMaid
         System.out.println( "\nMoving cards from deck to stock...\n" ) ;
 
         this.stock.transferFromPile( this.deck ) ;
+        this.stock.shuffle() ;
 
         System.out.printf( "%n%s distributes cards from the stock. ", dealer.name ) ;
 
@@ -224,18 +226,40 @@ public class OldMaid
             dealer.dealtACard( topCard ) ;
 
             if ( playerNum != 0 )
+                {
                 dealer.giveTopCardToPlayer( this.players.get( playerNum ) ) ;
+
+                }
 
             }
 
-        // Players remove their pairs
         System.out.println( "Now it's time to clear your pairs! " ) ;
-
         clearPairs() ;
+        
+        this.running = true ;
+        while ( this.running )
+            {
+            boolean anyMatchThisRound = performPassing() ;
 
-        // Now, the players will hand the player 'to their right' a random card from
-        // their hand, and continue
-        // taking turns playing
+            if ( !anyMatchThisRound )
+                {
+                // No pairs formed in the last round, game ends
+                for ( Player p : this.players )
+                    {
+                    if ( p.hasOldMaid() )
+                        {
+                        System.out.printf( "%nGame Over! %s is the Old Maid!%n", p.name ) ;
+                        break ;
+
+                        }
+
+                    }
+
+                this.running = false ;
+
+                }
+
+            }
 
         // when end, set this.running false
         }   // end run()
@@ -296,7 +320,6 @@ public class OldMaid
             }
 
         this.deck = new Deck( 1 ) ;
-        this.deck.shuffle() ;
         this.stock = new Stock() ;
         this.discard = new DiscardPile() ;
 
@@ -312,8 +335,6 @@ public class OldMaid
     private void summary()
         {
 // TODO: Implement this
-
-        return ;
 
         }   // end summary()
 
@@ -365,7 +386,10 @@ public class OldMaid
                 {
                 cardToPair = promptForCard( "Card:  " ) ;
                 if ( cardToPair == null ) // if 'q' input
+                    {
                     break ;
+
+                    }
 
                 // Asserts that the player actually has this card, null otherwise
                 // if player misinputs, they can try again
@@ -397,7 +421,10 @@ public class OldMaid
 
                     }
                 else
+                    {
                     System.out.println( "This card does not have a pair, so you can't pick that." ) ;
+
+                    }
 
                 Card.setCompareSuit( true ) ;
 
@@ -405,6 +432,73 @@ public class OldMaid
 
             }
 
+        }
+
+
+    /**
+     * @param currentPlayer
+     * @param playerToRight
+     *
+     * @return
+     */
+    public Card passToRight( Player currentPlayer,
+                             Player playerToRight )
+        {
+        // Now, the players will hand the player 'to their right' a random card from
+        // their hand, and continue
+        // taking turns playing
+
+        currentPlayer.flipAll() ;
+        currentPlayer.shuffleHand() ;
+
+        return currentPlayer.giveTopCardToPlayer( playerToRight ) ;
+
+        }
+    
+    public boolean performPassing() 
+        {
+        boolean anyMatchThisRound = false;
+
+        for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
+            {
+            Player playing = this.players.get( i ) ;
+            Player receiving = this.players.get( ( i + 1 ) % this.numberOfPlayers ) ;
+
+            if ( playing.getHandSize() == 0 )
+                {
+                continue ;
+
+                }
+
+            Card passed = passToRight( playing, receiving ) ;
+            if ( passed == null )
+                {
+                continue ;
+
+                }
+
+            Card match = receiving.findMatch( passed ) ;
+            if ( match != null )
+                {
+                receiving.removePair( passed, match ) ;
+                anyMatchThisRound = true ;
+
+                System.out.printf( "%s passed a card to %s. %s formed a pair and removed it!%n",
+                                   playing.name,
+                                   receiving.name,
+                                   receiving.name ) ;
+
+                }
+            else
+                {
+                System.out.printf( "%s passed a card to %s. No pair formed.%n",
+                                   playing.name,
+                                   receiving.name ) ;
+
+                }
+
+            }
+        return anyMatchThisRound ; 
         }
 
 
@@ -497,7 +591,10 @@ public class OldMaid
                     }
 
                 if ( "Q".equals( input ) )
+                    {
                     return null ;
+
+                    }
 
                 }
 

@@ -32,8 +32,11 @@
 package edu.wit.scds.ds.lists.app.game ;
 
 import edu.wit.scds.ds.lists.app.cards.Card ;
+import edu.wit.scds.ds.lists.app.cards.Rank ;
 import edu.wit.scds.ds.lists.app.piles.Field ;
 import edu.wit.scds.ds.lists.app.piles.Hand ;
+
+import java.util.ListIterator ;
 
 /**
  * Representation of a player
@@ -114,14 +117,41 @@ public class Player
      *
      * @param target
      *     person recieving the card.
+     * @return 
      */
-    public void giveTopCardToPlayer( Player target )
+    public Card giveTopCardToPlayer( Player target )
         {
 
         Card giveaway = this.hand.getRandomCard() ;
         target.dealtACard( giveaway ) ;
         this.hand.removeTopCard() ;
-
+        
+        return giveaway ; 
+        }
+    
+    
+    /**
+     * 
+     * 
+     * @return
+     */
+    public int getHandSize() 
+        {
+        int count = 0 ; 
+        for( @SuppressWarnings( "unused" ) Card cardInHand : this.hand ) 
+            {
+            count++ ; 
+            }
+        return count ; 
+        }
+    
+    /**
+     * 
+     * 
+     */
+    public void shuffleHand() 
+        {
+        this.hand.shuffle();
         }
 
 
@@ -178,8 +208,44 @@ public class Player
         return null ;
 
         }
+    
+    /**
+     * Checks if there are any matching pairs left
+     * 
+     * @return true or false 
+     */
+    public boolean hasPairs() 
+        {
+        
+        for(Card card1 : this.hand) 
+            {
+            if(this.findMatch( card1 ) != null ) 
+                {
+                return true ;
+                }
+            }
+        return false ;
+        }
+    
+    
+    /**
+     * 
+     * 
+     * @return true or false
+     */
+    public boolean hasOldMaid() 
+        {
+        for(Card oldMaid : this.hand) 
+            {
+            if( oldMaid.rank == Rank.JOKER ) 
+                {
+                return true ;
+                }
+            }
+        return false ;
+        }
 
-
+    
     /**
      * Player removes a card from their hand
      * 
@@ -204,6 +270,15 @@ public class Player
 
         return false ;
 
+        }
+    
+    /**
+     * 
+     * 
+     */
+    public void flipAll() 
+        {
+        this.hand.flipAll();
         }
 
 

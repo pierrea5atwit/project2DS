@@ -95,9 +95,6 @@ public class OldMaid
     /**
      * set up the game instance
      *
-     * @param input
-     *     used for player interactions
-     *
      * @since 1.0
      */
     private OldMaid()
@@ -105,7 +102,6 @@ public class OldMaid
 
         this.scanner = new Scanner( System.in ) ;
         this.players = new ArrayList<>() ;
-        // TODO implement this
 
         }   // end constructor
 
@@ -129,42 +125,28 @@ public class OldMaid
         // delete...
 
         final OldMaid exampleGame = new OldMaid() ;
+        String playAgain ;
 
         exampleGame.setup() ;
 
         while ( exampleGame.running )
             {
             exampleGame.run() ;
-
-            if ( !exampleGame.running )
+            playAgain = exampleGame.promptForLine( "%nplay again? 'y'" ) ;
+            
+            if ( !playAgain.toLowerCase().equals( "y" ) )
                 {
                 exampleGame.tearDown() ;
 
-                return ;
+                break ;
 
                 }
-
-            exampleGame.summary() ;
-
-            final String playAgain = exampleGame.promptForLine( "%nplay again?" ) ;
-
-            if ( Character.toLowerCase( playAgain.charAt( 0 ) ) != 'y' )
-                {
-                exampleGame.running = false ;
-
-                exampleGame.tearDown() ;
-
-                return ;
-
-                }
-
-            exampleGame.reset() ;
 
             }
 
-        exampleGame.tearDown() ;
+        exampleGame.reset() ;
 
-        }   // end main()
+        }  // end main()
 
     /*
      * operational methods
@@ -179,8 +161,14 @@ public class OldMaid
     private void reset()
         {
 
-        // TODO implement this
-        setup() ;
+        if ( this.running )
+            return ;
+
+        this.deck.transferFromPile( this.stock ) ;
+
+        this.stock.clear() ;
+        this.players.clear() ;
+        this.discard.clear() ;
 
         }   // end reset()
 
@@ -213,6 +201,7 @@ public class OldMaid
 
         this.stock.transferFromPile( this.deck ) ;
         this.stock.shuffle() ;
+        this.stock.shuffle() ;
 
         System.out.printf( "%n%s distributes cards from the stock. ", dealer.name ) ;
 
@@ -235,7 +224,7 @@ public class OldMaid
 
         System.out.println( "Now it's time to clear your pairs! " ) ;
         clearPairs() ;
-        
+
         this.running = true ;
         while ( this.running )
             {
@@ -243,18 +232,8 @@ public class OldMaid
 
             if ( !anyMatchThisRound )
                 {
-                // No pairs formed in the last round, game ends
-                for ( Player p : this.players )
-                    {
-                    if ( p.hasOldMaid() )
-                        {
-                        System.out.printf( "%nGame Over! %s is the Old Maid!%n", p.name ) ;
-                        break ;
-
-                        }
-
-                    }
-
+                // No pairs were formed in the last round, the game ends
+                summary() ;
                 this.running = false ;
 
                 }
@@ -276,6 +255,8 @@ public class OldMaid
         // NOTE this is a piece of my setup() to give you some ideas about how to
         // implement the rest
 
+        if ( !this.running )
+            return ;
         // find out how many players
         this.numberOfPlayers = DEFAULT_PLAYER_COUNT ;
 
@@ -331,10 +312,20 @@ public class OldMaid
      *
      * @since 1.0
      */
-    @SuppressWarnings( "static-method" )
     private void summary()
         {
-// TODO: Implement this
+
+        for ( Player p : this.players )
+            {
+            if ( p.hasOldMaid() )
+                {
+                System.out.printf( "%nGame Over! %s has the Old Maid and loses the game!%n",
+                                   p.name ) ;
+                break ;
+
+                }
+
+            }
 
         }   // end summary()
 
@@ -347,14 +338,12 @@ public class OldMaid
     private void tearDown()
         {
 
-        // NOTE this is my implementation - same as above - use or not - your choice
-
         // release most resources
         reset() ;
 
         this.players.clear() ;
 
-        System.out.printf( "%n%nThank you for playing.%n" ) ;
+        System.out.printf( "%nThank you for playing.%n" ) ;
 
         }   // end tearDown()
 
@@ -391,14 +380,12 @@ public class OldMaid
 
                     }
 
-                // Asserts that the player actually has this card, null otherwise
+                // Used to look up if player actually has this card, null otherwise
                 // if player misinputs, they can try again
                 cardToPair = currentPlayer.searchPile( cardToPair ) ;
 
                 if ( cardToPair == null )
                     {
-                    cardToPair = new Card( Rank.JOKER ) ; // garbage value to avoid
-                                                          // loop exit
                     System.out.println( "Card not found, try again." ) ;
                     continue ;
 
@@ -422,7 +409,7 @@ public class OldMaid
                     }
                 else
                     {
-                    System.out.println( "This card does not have a pair, so you can't pick that." ) ;
+                    System.out.println( "This card does not have a pair, so you can't pick that.\n" ) ;
 
                     }
 
@@ -432,32 +419,17 @@ public class OldMaid
 
             }
 
-        }
+        } // end clearPairs()
 
 
     /**
-     * @param currentPlayer
-     * @param playerToRight
-     *
-     * @return
+     * performs the passes between players as they play the game.
+     * 
+     * @return true if any passes are made in round.
      */
-    public Card passToRight( Player currentPlayer,
-                             Player playerToRight )
+    public boolean performPassing()
         {
-        // Now, the players will hand the player 'to their right' a random card from
-        // their hand, and continue
-        // taking turns playing
-
-        currentPlayer.flipAll() ;
-        currentPlayer.shuffleHand() ;
-
-        return currentPlayer.giveTopCardToPlayer( playerToRight ) ;
-
-        }
-    
-    public boolean performPassing() 
-        {
-        boolean anyMatchThisRound = false;
+        boolean anyMatchThisRound = false ;
 
         for ( int i = 0 ; i < this.numberOfPlayers ; i++ )
             {
@@ -470,7 +442,7 @@ public class OldMaid
 
                 }
 
-            Card passed = passToRight( playing, receiving ) ;
+            Card passed = playing.passToRight( receiving ) ;
             if ( passed == null )
                 {
                 continue ;
@@ -483,22 +455,27 @@ public class OldMaid
                 receiving.removePair( passed, match ) ;
                 anyMatchThisRound = true ;
 
-                System.out.printf( "%s passed a card to %s. %s formed a pair and removed it!%n",
+                System.out.printf( "%s passes a RANDOM card to %s. Accept it to continue: ",
                                    playing.name,
-                                   receiving.name,
                                    receiving.name ) ;
+                this.scanner.nextLine() ;
+
+                System.out.printf( "%s formed a pair and removed it!%n", receiving.name ) ;
+                this.scanner.nextLine() ;
 
                 }
             else
                 {
-                System.out.printf( "%s passed a card to %s. No pair formed.%n",
+                System.out.printf( "%s passed a card to %s. No pair could be formed.%n",
                                    playing.name,
                                    receiving.name ) ;
 
                 }
 
             }
-        return anyMatchThisRound ; 
+
+        return anyMatchThisRound ;
+
         }
 
 

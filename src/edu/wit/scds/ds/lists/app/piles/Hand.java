@@ -76,23 +76,41 @@ public class Hand extends Pile
 
     // TODO implement this
 
+
     /**
-     * @param dealt represents 'card dealt to hand'
-     * 
+     * @param dealt
+     *     represents 'card dealt to hand'
      */
     public void addToTop( Card dealt )
         {
-        
+
         this.cards.add( 0, dealt ) ;
-        
+
         }
 
 
+    /**
+     * get current size of the hand by counting your cards
+     * 
+     * @return size of player's current hand
+     */
+    public int getHandSize()
+        {
+        int count = 0 ;
+        
+        for ( Card c : this.cards )
+            {
+            count++ ;
+
+            }
+
+        return count ;
+
+        }
+
 
     /**
-     * @return 
-     * 
-     * 
+     * @return
      */
     public Card getRandomCard()
         {
@@ -113,7 +131,5 @@ public class Hand extends Pile
         // TODO Auto-generated method stub
 
         }	// end main()
-
-
 
     }	// end class Hand

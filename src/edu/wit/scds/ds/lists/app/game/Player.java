@@ -117,7 +117,8 @@ public class Player
      *
      * @param target
      *     person recieving the card.
-     * @return 
+     * 
+     * @return the top card of a player's deck
      */
     public Card giveTopCardToPlayer( Player target )
         {
@@ -125,33 +126,33 @@ public class Player
         Card giveaway = this.hand.getRandomCard() ;
         target.dealtACard( giveaway ) ;
         this.hand.removeTopCard() ;
-        
-        return giveaway ; 
+
+        return giveaway ;
+
         }
-    
-    
+
+
+    /**
+     * return this player's hand count
+     * 
+     * @return size of player's current hand
+     */
+    public int getHandSize()
+        {
+
+        return this.hand.getHandSize() ;
+
+        }
+
+
     /**
      * 
      * 
-     * @return
      */
-    public int getHandSize() 
+    public void shuffleHand()
         {
-        int count = 0 ; 
-        for( @SuppressWarnings( "unused" ) Card cardInHand : this.hand ) 
-            {
-            count++ ; 
-            }
-        return count ; 
-        }
-    
-    /**
-     * 
-     * 
-     */
-    public void shuffleHand() 
-        {
-        this.hand.shuffle();
+        this.hand.shuffle() ;
+
         }
 
 
@@ -191,7 +192,7 @@ public class Player
 
         // flag prevents counting one occurence as a pair
         boolean seen = false ;
-        
+
         for ( Card card : this.hand )
             {
             if ( ( card.rank ).equals( target.rank ) && !seen )
@@ -208,44 +209,71 @@ public class Player
         return null ;
 
         }
-    
+
+
     /**
      * Checks if there are any matching pairs left
      * 
-     * @return true or false 
-     */
-    public boolean hasPairs() 
-        {
-        
-        for(Card card1 : this.hand) 
-            {
-            if(this.findMatch( card1 ) != null ) 
-                {
-                return true ;
-                }
-            }
-        return false ;
-        }
-    
-    
-    /**
-     * 
-     * 
      * @return true or false
      */
-    public boolean hasOldMaid() 
+    public boolean hasPairs()
         {
-        for(Card oldMaid : this.hand) 
+
+        for ( Card card1 : this.hand )
             {
-            if( oldMaid.rank == Rank.JOKER ) 
+            if ( this.findMatch( card1 ) != null )
                 {
                 return true ;
+
                 }
+
             }
+
         return false ;
+
         }
 
-    
+
+    /**
+     * @return true or false
+     */
+    public boolean hasOldMaid()
+        {
+        for ( Card oldMaid : this.hand )
+            {
+            if ( oldMaid.rank == Rank.JOKER )
+                {
+                return true ;
+
+                }
+
+            }
+
+        return false ;
+
+        }
+
+
+    /**
+     * @param currentPlayer
+     * @param playerToRight
+     *
+     * @return
+     */
+    public Card passToRight( Player playerToRight )
+        {
+        // Now, the players will hand the player 'to their right' a random card from
+        // their hand, and continue
+        // taking turns playing
+
+        this.flipAll() ;
+        this.shuffleHand() ;
+
+        return this.giveTopCardToPlayer( playerToRight ) ;
+
+        }
+
+
     /**
      * Player removes a card from their hand
      * 
@@ -271,14 +299,16 @@ public class Player
         return false ;
 
         }
-    
+
+
     /**
      * 
      * 
      */
-    public void flipAll() 
+    public void flipAll()
         {
-        this.hand.flipAll();
+        this.hand.flipAll() ;
+
         }
 
 
@@ -309,8 +339,8 @@ public class Player
     /*
      * utility methods
      */
-    
-    
+
+
     @Override
     public String toString()
         {
